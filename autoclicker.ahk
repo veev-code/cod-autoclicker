@@ -1,10 +1,7 @@
 ﻿#SingleInstance force
 
-; Default to disabled
 global Enabled := False
-; Default to primary weapon
 global Primary := True
-; Do we want to use LMB/RMB for secondary?
 global UseSecondary := True
 
 HotKey, *LButton, % OnOff()
@@ -18,7 +15,9 @@ Return
 	UpdateToolTip()
 	Return
 
-; Hotkey to enable/disable script
+; Hotkey to toggle support for secondary
+; If secondary is enabled, holding LMB will spam LMB+RMB (use for, e.g., dual Diamatti's)
+; If secondary is disabled, will do nothing (use for, e.g., MAC-10)
 *XButton2::
 	UseSecondary := !UseSecondary
 	UpdateToolTip()
