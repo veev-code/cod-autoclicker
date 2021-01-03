@@ -44,7 +44,7 @@ UpdateToolTip() {
 	} else {
 		ToolTip, %OnOff%, A_ScreenWidth, A_ScreenHeight
 	}
-    return
+	return
 }
 
 OnOff() {
