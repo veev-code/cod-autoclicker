@@ -2,71 +2,63 @@
 
 global Enabled := False
 global Primary := True
-global UseSecondary := True
+global EnableSecondary := True
 
-HotKey, *LButton, % OnOff()
-UpdateToolTip()
+Update()
 Return
 
 ; Hotkey to enable/disable script
 *XButton1::
 	Enabled := !Enabled
-	Hotkey, *LButton, % OnOff()
-	UpdateToolTip()
+	Update()
 	Return
 
 ; Hotkey to toggle support for secondary
 ; If secondary is enabled, holding LMB will spam LMB+RMB (use for, e.g., dual Diamatti's)
 ; If secondary is disabled, will do nothing (use for, e.g., MAC-10)
 *XButton2::
-	UseSecondary := !UseSecondary
-	UpdateToolTip()
+	EnableSecondary := !EnableSecondary
+	Update()
 	Return
 
 ; When 1 is pressed last, assume we're using primary weapon
 ~*1::
 	Primary := True
-	UpdateToolTip()
+	Update()
 	Return
 
 ; When 2 is pressed last, assume we're using secondary weapon
 ~*2::
 	Primary := False
-	UpdateToolTip()
+	Update()
 	Return
 
 ; Logic for when LMB is pressed
 *LButton::
-	if (Primary) {
-		SetMouseDelay 5
-		While GetKeyState("LButton","P")
-			Click
-	} else if (UseSecondary) {
-		SetMouseDelay 5
-		While GetKeyState("LButton","P")
-			Click
-			Click, right
-	} else {
+	SetMouseDelay 5
+	While GetKeyState("LButton","P")
 		Click
-	}
+		if (!Primary) {
+			Click, right
+		}
 	Return
 
-UpdateToolTip() {
-	OnOff := OnOff()
+Update() {
 	if (Enabled) {
-		Weapon := (Primary) ? "Primary" : "Secondary"
 		if (Primary) {
-			ToolTip, %OnOff% (%Weapon%), A_ScreenWidth, A_ScreenHeight
+			Hotkey, *LButton, On
+			ToolTip, On (Primary), A_ScreenWidth, A_ScreenHeight
 		} else {
-			SecondaryEnabled := (UseSecondary) ? "Enabled" : "Disabled"
-			ToolTip, %OnOff% (%Weapon% - %SecondaryEnabled%), A_ScreenWidth, A_ScreenHeight
+			if (EnableSecondary) {
+				Hotkey, *LButton, On
+				ToolTip, On (Secondary - Enabled), A_ScreenWidth, A_ScreenHeight
+			} else {
+				Hotkey, *LButton, Off
+				ToolTip, On (Secondary - Disabled), A_ScreenWidth, A_ScreenHeight
+			}
 		}
 	} else {
-		ToolTip, %OnOff%, A_ScreenWidth, A_ScreenHeight
+		Hotkey, *LButton, Off
+		ToolTip, Off, A_ScreenWidth, A_ScreenHeight
 	}
-	return
-}
-
-OnOff() {
-	return (Enabled) ? "On" : "Off"
 }
